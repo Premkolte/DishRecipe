@@ -4,23 +4,58 @@ import { NavLink } from 'react-router-dom'
 
 const Navbar = () => {
   return (
-    <div className='mb-10 flex gap-10 items-center justify-center'>
+    <nav className='flex gap-2 items-center'>
         <NavLink 
-            className={(e) => `px-4 py-2 hover:bg-gray-700 rounded ${e.isActive ? "text-pink-600" : ""}`}
-            to="/" >Home</NavLink>
+            className={(e) => `px-4 py-2 rounded-full font-medium transition-all duration-300 ${
+              e.isActive 
+                ? "bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-lg" 
+                : "text-gray-300 hover:text-white hover:bg-gray-700/50"
+            }`}
+            to="/" 
+        >
+          Home
+        </NavLink>
         <NavLink 
-            className={(e) => `px-4 py-2 hover:bg-gray-700 rounded ${e.isActive ? "text-pink-600" : ""}`}
-            to="/about">About</NavLink>
+            className={(e) => `px-4 py-2 rounded-full font-medium transition-all duration-300 ${
+              e.isActive 
+                ? "bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-lg" 
+                : "text-gray-300 hover:text-white hover:bg-gray-700/50"
+            }`}
+            to="/about"
+        >
+          About
+        </NavLink>
         <NavLink 
-            className={(e) => `px-4 py-2 hover:bg-gray-700 rounded ${e.isActive ? "text-pink-600" : ""}`}
-            to="/recipes">Recipes</NavLink>
+            className={(e) => `px-4 py-2 rounded-full font-medium transition-all duration-300 ${
+              e.isActive 
+                ? "bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-lg" 
+                : "text-gray-300 hover:text-white hover:bg-gray-700/50"
+            }`}
+            to="/recipes"
+        >
+          Recipes
+        </NavLink>
         <NavLink 
-            className={(e) => `px-4 py-2 hover:bg-gray-700 rounded ${e.isActive ? "text-pink-600" : ""}`}
-            to="/create-recipe">Create</NavLink>
+            className={(e) => `px-4 py-2 rounded-full font-medium transition-all duration-300 ${
+              e.isActive 
+                ? "bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-lg" 
+                : "text-gray-300 hover:text-white hover:bg-gray-700/50"
+            }`}
+            to="/create-recipe"
+        >
+          Create
+        </NavLink>
         <NavLink 
-            className={(e) => `px-4 py-2 hover:bg-gray-700 rounded ${e.isActive ? "text-pink-600" : ""}`}
-            to="/favorites">Favorites</NavLink>
-    </div>
+            className={(e) => `px-4 py-2 rounded-full font-medium transition-all duration-300 ${
+              e.isActive 
+                ? "bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-lg" 
+                : "text-gray-300 hover:text-white hover:bg-gray-700/50"
+            }`}
+            to="/favorites"
+        >
+          Favorites
+        </NavLink>
+    </nav>
   )
 }
 

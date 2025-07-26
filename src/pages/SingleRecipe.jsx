@@ -54,6 +54,31 @@ const SingleRecipe = () => {
     }));
   };
 
+  const handleDelete = () => {
+    const confirmDelete = window.confirm("Are you sure you want to delete this recipe? This action cannot be undone.");
+    
+    if (confirmDelete) {
+      // Remove from context data
+      const updatedData = data.filter(item => item.id !== params.id);
+      setdata(updatedData);
+      
+      // Update localStorage for recipes
+      localStorage.setItem("recipes", JSON.stringify(updatedData));
+      
+      // Also remove from favorites if it exists there
+      const updatedFavorites = favorites.filter(item => item.id !== params.id);
+      setFavorites(updatedFavorites);
+      localStorage.setItem("favorites", JSON.stringify(updatedFavorites));
+      
+      // Dispatch custom event to notify other components
+      window.dispatchEvent(new Event('favoritesUpdated'));
+      
+      toast.success("Recipe deleted successfully!");
+      
+      // Navigate back to recipes page
+      navigate('/recipes');
+    }
+  };
 
   // useEffect(()=>{
   //   console.log('Favorites updated:', favorites);
@@ -102,12 +127,20 @@ const SingleRecipe = () => {
         
         <div className="flex space-x-2">
           {!isEditing ? (
-            <button 
-              onClick={handleEdit}
-              className="bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded transition-colors"
-            >
-              Edit Recipe
-            </button>
+            <>
+              <button 
+                onClick={handleDelete}
+                className="bg-red-600 hover:bg-red-500 px-4 py-2 rounded transition-colors"
+              >
+                Delete Recipe
+              </button>
+              <button 
+                onClick={handleEdit}
+                className="bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded transition-colors"
+              >
+                Edit Recipe
+              </button>
+            </>
           ) : (
             <>
               <button 

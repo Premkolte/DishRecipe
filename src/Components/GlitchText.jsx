@@ -1,76 +1,126 @@
+import React from 'react';
+
 const GlitchText = ({
   children,
   speed = 0.5,
   enableShadows = true,
   enableOnHover = false,
   className = "",
-  
 }) => {
-  const inlineStyles = {
-    "--after-duration": `${speed * 3}s`,
-    "--before-duration": `${speed * 2}s`,
-    "--after-shadow": enableShadows ? "-5px 0 red" : "none",
-    "--before-shadow": enableShadows ? "5px 0 cyan" : "none",
+  const glitchStyle = {
+    position: 'relative',
+    fontSize: 'clamp(3rem, 8vw, 6rem)',
+    fontWeight: 'bold',
+    color: 'white',
+    textTransform: 'uppercase',
+    letterSpacing: '3px',
+    display: 'inline-block',
+    animation: !enableOnHover ? `glitch-shake ${speed * 2}s infinite` : 'none',
   };
 
-  const baseClasses =
-    "text-white text-[clamp(2rem,10vw,8rem)] font-black relative mx-auto select-none cursor-pointer";
+  const beforeStyle = {
+    content: `"${children}"`,
+    position: 'absolute',
+    top: '0',
+    left: '2px',
+    width: '100%',
+    height: '100%',
+    color: enableShadows ? '#ff0000' : 'transparent',
+    zIndex: -1,
+    animation: !enableOnHover ? `glitch-1 ${speed * 2}s infinite` : 'none',
+  };
 
-  const pseudoClasses = !enableOnHover
-    ? 
-      "after:content-[attr(data-text)] after:absolute after:top-0 after:left-[10px] after:text-white after:bg-gray-800 after:overflow-hidden after:[clip-path:inset(0_0_0_0)] after:[text-shadow:var(--after-shadow)] after:animate-glitch-after " +
-      "before:content-[attr(data-text)] before:absolute before:top-0 before:left-[-10px] before:text-white before:bg-gray-800 before:overflow-hidden before:[clip-path:inset(0_0_0_0)] before:[text-shadow:var(--before-shadow)] before:animate-glitch-before"
-    : 
-      "after:content-[''] after:absolute after:top-0 after:left-[10px] after:text-white after:bg-gray-800 after:overflow-hidden after:[clip-path:inset(0_0_0_0)] after:opacity-0 " +
-      "before:content-[''] before:absolute before:top-0 before:left-[-10px] before:text-white before:bg-gray-800 before:overflow-hidden before:[clip-path:inset(0_0_0_0)] before:opacity-0 " +
-      "hover:after:content-[attr(data-text)] hover:after:opacity-100 hover:after:[text-shadow:var(--after-shadow)] hover:after:animate-glitch-after " +
-      "hover:before:content-[attr(data-text)] hover:before:opacity-100 hover:before:[text-shadow:var(--before-shadow)] hover:before:animate-glitch-before";
+  const afterStyle = {
+    content: `"${children}"`,
+    position: 'absolute',
+    top: '0',
+    left: '-2px',
+    width: '100%',
+    height: '100%',
+    color: enableShadows ? '#00ffff' : 'transparent',
+    zIndex: -2,
+    animation: !enableOnHover ? `glitch-2 ${speed * 3}s infinite` : 'none',
+  };
 
-  const combinedClasses = `${baseClasses} ${pseudoClasses} ${className}`;
+  React.useEffect(() => {
+    // Inject CSS animations into the document head
+    const styleSheet = document.createElement('style');
+    styleSheet.type = 'text/css';
+    styleSheet.innerHTML = `
+      @keyframes glitch-shake {
+        0% { transform: translate(0); }
+        10% { transform: translate(-1px, -1px); }
+        20% { transform: translate(-2px, 0px); }
+        30% { transform: translate(2px, 1px); }
+        40% { transform: translate(1px, -1px); }
+        50% { transform: translate(-1px, 1px); }
+        60% { transform: translate(-2px, 1px); }
+        70% { transform: translate(2px, 1px); }
+        80% { transform: translate(-1px, -1px); }
+        90% { transform: translate(1px, 2px); }
+        100% { transform: translate(0); }
+      }
+      
+      @keyframes glitch-1 {
+        0% { transform: translate(0); clip-path: inset(40% 0 61% 0); }
+        20% { transform: translate(-2px, 2px); clip-path: inset(92% 0 1% 0); }
+        40% { transform: translate(-2px, -2px); clip-path: inset(43% 0 1% 0); }
+        60% { transform: translate(2px, 2px); clip-path: inset(25% 0 58% 0); }
+        80% { transform: translate(2px, -2px); clip-path: inset(54% 0 7% 0); }
+        100% { transform: translate(0); clip-path: inset(58% 0 43% 0); }
+      }
+      
+      @keyframes glitch-2 {
+        0% { transform: translate(0); clip-path: inset(25% 0 58% 0); }
+        15% { transform: translate(2px, -2px); clip-path: inset(44% 0 39% 0); }
+        30% { transform: translate(2px, 2px); clip-path: inset(80% 0 5% 0); }
+        45% { transform: translate(-2px, -2px); clip-path: inset(54% 0 29% 0); }
+        60% { transform: translate(-2px, 2px); clip-path: inset(58% 0 43% 0); }
+        75% { transform: translate(2px, 2px); clip-path: inset(93% 0 4% 0); }
+        90% { transform: translate(-2px, -2px); clip-path: inset(81% 0 14% 0); }
+        100% { transform: translate(0); clip-path: inset(60% 0 21% 0); }
+      }
+    `;
+    document.head.appendChild(styleSheet);
+
+    return () => {
+      document.head.removeChild(styleSheet);
+    };
+  }, []);
 
   return (
-    <div style={inlineStyles} data-text={children} className={combinedClasses}>
-      {children}
+    <div className={`mb-4 ${className}`}>
+      <h1 
+        style={glitchStyle}
+        onMouseEnter={enableOnHover ? (e) => {
+          e.target.style.animation = `glitch-shake ${speed * 2}s infinite`;
+          e.target.querySelector('.glitch-before').style.animation = `glitch-1 ${speed * 2}s infinite`;
+          e.target.querySelector('.glitch-after').style.animation = `glitch-2 ${speed * 3}s infinite`;
+        } : undefined}
+        onMouseLeave={enableOnHover ? (e) => {
+          e.target.style.animation = 'none';
+          e.target.querySelector('.glitch-before').style.animation = 'none';
+          e.target.querySelector('.glitch-after').style.animation = 'none';
+        } : undefined}
+      >
+        <span 
+          className="glitch-before"
+          style={beforeStyle}
+          aria-hidden="true"
+        >
+          {children}
+        </span>
+        <span 
+          className="glitch-after"
+          style={afterStyle}
+          aria-hidden="true"
+        >
+          {children}
+        </span>
+        {children}
+      </h1>
     </div>
   );
 };
 
 export default GlitchText;
-
-// tailwind.config.js
-// module.exports = {
-//   theme: {
-//     extend: {
-//       keyframes: {
-//         glitch: {
-//           "0%": { "clip-path": "inset(20% 0 50% 0)" },
-//           "5%": { "clip-path": "inset(10% 0 60% 0)" },
-//           "10%": { "clip-path": "inset(15% 0 55% 0)" },
-//           "15%": { "clip-path": "inset(25% 0 35% 0)" },
-//           "20%": { "clip-path": "inset(30% 0 40% 0)" },
-//           "25%": { "clip-path": "inset(40% 0 20% 0)" },
-//           "30%": { "clip-path": "inset(10% 0 60% 0)" },
-//           "35%": { "clip-path": "inset(15% 0 55% 0)" },
-//           "40%": { "clip-path": "inset(25% 0 35% 0)" },
-//           "45%": { "clip-path": "inset(30% 0 40% 0)" },
-//           "50%": { "clip-path": "inset(20% 0 50% 0)" },
-//           "55%": { "clip-path": "inset(10% 0 60% 0)" },
-//           "60%": { "clip-path": "inset(15% 0 55% 0)" },
-//           "65%": { "clip-path": "inset(25% 0 35% 0)" },
-//           "70%": { "clip-path": "inset(30% 0 40% 0)" },
-//           "75%": { "clip-path": "inset(40% 0 20% 0)" },
-//           "80%": { "clip-path": "inset(20% 0 50% 0)" },
-//           "85%": { "clip-path": "inset(10% 0 60% 0)" },
-//           "90%": { "clip-path": "inset(15% 0 55% 0)" },
-//           "95%": { "clip-path": "inset(25% 0 35% 0)" },
-//           "100%": { "clip-path": "inset(30% 0 40% 0)" },
-//         },
-//       },
-//       animation: {
-//         "glitch-after": "glitch var(--after-duration) infinite linear alternate-reverse",
-//         "glitch-before": "glitch var(--before-duration) infinite linear alternate-reverse",
-//       },
-//     },
-//   },
-//   plugins: [],
-// };
